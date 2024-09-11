@@ -17,10 +17,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -33,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jogodado.ui.theme.JogoDadoTheme
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,63 +62,94 @@ class MainActivity : ComponentActivity() {
                             )
                             .padding(innerPadding)
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(5.dp),
-                            verticalArrangement = Arrangement.Top,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            TopText(text = "JOGO DO DADO")
-
-                            Spacer(modifier = Modifier.height(20.dp))
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.dado_6),
-                                    contentDescription = "Jogo 1",
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(200.dp)
-                                )
-
-                                Spacer(modifier = Modifier.width(20.dp))
-
-                                Image(
-                                    painter = painterResource(id = R.drawable.dado_5),
-                                    contentDescription = "Jogo 2",
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(200.dp)
-                                )
-                            }
-                        }
+                        jogoDado()
                     }
                 }
             }
         }
     }
+}
 
-    @Composable
-    fun TopText(text: String, modifier: Modifier = Modifier) {
-        Text(
-            text = text,
-            color = Color.White,
-            fontSize = 40.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            modifier = modifier
-        )
-    }
+@Composable
+fun jogoDado() {
+    val dice1 = remember { mutableStateOf(R.drawable.dado_1) }
+    val dice2 = remember { mutableStateOf(R.drawable.dado_1) }
 
-    @Preview(showBackground = true)
-    @Composable
-    fun GreetingPreview() {
-        JogoDadoTheme {
-            TopText(text = "Texto no Topo")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(5.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TopText(text = "JOGO DO DADO")
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Image(
+                painter = painterResource(id = dice1.value),
+                contentDescription = "Jogo 1",
+                modifier = Modifier
+                    .weight(1f)
+                    .height(150.dp)
+            )
+
+            Spacer(modifier = Modifier.width(20.dp))
+
+            Image(
+                painter = painterResource(id = dice2.value),
+                contentDescription = "Jogo 2",
+                modifier = Modifier
+                    .weight(1f)
+                    .height(150.dp)
+            )
         }
+
+        Button(
+            onClick = {
+                dice1.value = imagemAleatoria()
+                dice2.value = imagemAleatoria()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .wrapContentSize(align = Alignment.BottomCenter)
+        ) {
+            Text(text = "Lançar Dados")
+        }
+    }
+}
+
+fun imagemAleatoria(): Int {
+    val diceImages = listOf(
+        R.drawable.dado_1,
+        R.drawable.dado_2,
+        R.drawable.dado_3,
+        R.drawable.dado_4,
+        R.drawable.dado_5,
+        R.drawable.dado_6
+    )
+    return diceImages[Random.nextInt(diceImages.size)]
+}
+
+@Composable
+fun TopText(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        color = Color.White,
+        fontSize = 40.sp,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Center,
+        modifier = modifier
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    JogoDadoTheme {
+        jogoDado()
     }
 }
